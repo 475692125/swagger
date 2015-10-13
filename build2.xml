@@ -51,7 +51,5 @@
 		<delete file="${war_name}" />
 	</target>
 	<target name="publish" depends="clean,build">
-		<ant target="clean" />
-		<ant target="build" />
 	</target>
 </project>
