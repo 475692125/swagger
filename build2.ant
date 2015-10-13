@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="swagger" default="publish" basedir=".">
+	<property name="name" value="swagger" />
+	<property name="build.dir" value="build" />
+	<property name="build.web.dir" value="${build.dir}/WEB-INF" />
+	<property name="build.dest" value="${build.web.dir}/classes" />
+	<property name="build.web.lib.dir" value="${build.web.dir}/lib" />
+	
+	<property name="src.dir" value="src" />
+	<property name="webapp.dir" value="${basedir}/WebContent" />
+	<property name="lib.dir" value="${webapp.dir}/WEB-INF/lib" />
+	
+	<property name="jar_name" value="${build.dir}/${name}.jar" />
+	<property name="war_name" value="${name}.war" />
+	
+	<path id="classpath">  
+        <fileset dir="${lib.dir}">  
+            <include name="**/*.jar"/>  
+        </fileset>  
+    </path>  
+	
+	<target name="init">
+		<mkdir dir="${build.dest}" />
+	</target>
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${build.dest}" >
+			<classpath refid="classpath"/>  
+		</javac>
+		
+		<copy todir="${build.dest}">
+			<fileset dir="${src.dir}" excludes="**/*.java"></fileset>
+		</copy>
+		
+		<copy todir="${build.dir}">
+			<fileset dir="${webapp.dir}" excludes="**/*.class"></fileset>
+		</copy>
+	</target>
+	<target name="jar" depends="compile">
+		<!--jar jarfile="${jar_name}" basedir="${build.dest}" /-->
+	</target>
+	
+	<target name="build" depends="jar" description="打 war 包，不将 java 文件打入包内">  
+        <war warfile="${war_name}" webxml="${build.web.dir}/web.xml"> 
+            <fileset dir="${build.dir}"/>
+        </war>
+		<delete dir="${build.dir}" />
+    </target>  
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete file="${war_name}" />
+	</target>
+	<target name="publish" depends="clean,build">
+		<ant target="clean" />
+		<ant target="build" />
+	</target>
+</project>
